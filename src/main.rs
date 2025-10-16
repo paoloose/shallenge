@@ -7,13 +7,13 @@ Current minimum
 */
 
 // Available combinations
-const CHARS: &'static [u8; 64] = b"aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789+/";
+const CHARS: &[u8; 64] = b"aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789+/";
 
 // I designed this miner to use a range of values so i can "resume" its execution, and thanks
 // to this we can guarantee we never calculate the same sha two times
-const MIN_NUM: usize = 0;
+const MIN_NUM: usize = 50000000000000;
 const MAX_NUM: usize = 99999999999999;
-const SHA_PREFIX: &'static str = "paoloose/dot/site/";
+const SHA_PREFIX: &str = "paoloose/dot/site/";
 
 fn main() {
     let n_threads = std::thread::available_parallelism().unwrap().into();
@@ -42,9 +42,9 @@ fn main() {
             for c in start_loop..end_loop {
                 let mut current_char = 0;
                 // Each bit decided whether to include the char of CHARS (1 means include)
-                for b in 0..64 {
+                for (b, ch) in CHARS.iter().enumerate() {
                     if (((c >> b) & 1) as u8) == 1 {
-                        random_str_container[current_char] = CHARS[b];
+                        random_str_container[current_char] = *ch;
                         current_char += 1;
                     }
                 }
