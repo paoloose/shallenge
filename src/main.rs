@@ -3,7 +3,7 @@ use sha2::{Sha256, Digest};
 
 /*
 Current minimum
-(paoloose/AbCdDefFgGikKlnNoOpPqrR): 000000000139d6c7d8c7bffd05dc1b6fc67b3c3e381726ac87879d3c4fe05cb9
+(paoloose/dot/site/aABdDefFhHiIjKlLMnNpqrRsTUvVwW): 000000000040558f0e351ca906f13d46a7436b391e4fd0f174bc91a82fb037ea
 */
 
 // Available combinations
@@ -12,6 +12,7 @@ const CHARS: &[u8; 64] = b"aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0
 // I designed this miner to use a range of values so i can "resume" its execution, and thanks
 // to this we can guarantee we never calculate the same sha two times
 const MIN_NUM: usize = 50000000000000;
+const SKIP_ITER: usize = 100000000000;
 const MAX_NUM: usize = 99999999999999;
 const SHA_PREFIX: &str = "paoloose/dot/site/";
 
@@ -29,7 +30,7 @@ fn main() {
 
         // We define the slices that each thread will handle
         let total_tries = MAX_NUM - MIN_NUM;
-        let start_loop = MIN_NUM + (t * (total_tries / n_threads));
+        let start_loop = MIN_NUM + (t * (total_tries / n_threads)) + SKIP_ITER;
         let start_loop = usize::max(start_loop, 1); // avoid zero
         let end_loop = MIN_NUM + ((t + 1) * (total_tries / n_threads));
 
@@ -72,7 +73,7 @@ fn main() {
                         drop(global_min_sha_val);
                         let mut global_min_sha_set = global_min_sha.write().unwrap();
                         *global_min_sha_set = local_min_sha;
-                        println!("[t:{t}] New min ({to_hash}): {:x}", sha256_result);
+                        println!("[t:{t}] New min ({c}) ({to_hash}): {:x}", sha256_result);
                     }
                 }
             }
