@@ -1,5 +1,7 @@
 use std::{sync::Arc};
 use sha2::{Sha256, Digest};
+use std::time::SystemTime;
+use time::OffsetDateTime;
 
 /*
 Current minimum
@@ -15,6 +17,8 @@ const MIN_NUM: usize = 50000000000000;
 const SKIP_ITER: usize = 100000000000;
 const MAX_NUM: usize = 99999999999999;
 const SHA_PREFIX: &str = "paoloose/dot/site/";
+
+const DATE_FORMAT_STR: &str = "%Y-%m-%d %H:%M:%S";
 
 fn main() {
     let n_threads = std::thread::available_parallelism().unwrap().into();
@@ -73,7 +77,9 @@ fn main() {
                         drop(global_min_sha_val);
                         let mut global_min_sha_set = global_min_sha.write().unwrap();
                         *global_min_sha_set = local_min_sha;
-                        println!("[t:{t}] New min ({c}) ({to_hash}): {:x}", sha256_result);
+
+                        let dt: OffsetDateTime = SystemTime::now().into();
+                        println!("[t:{t}] {} New min ({c}) ({to_hash}): {:x}", dt.format(DATE_FORMAT_STR), sha256_result);
                     }
                 }
             }

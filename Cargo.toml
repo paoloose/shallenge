@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 sha2 = "0.10.9"
+time = "0.2.26"
 
 [profile.release]
 opt-level = 3
